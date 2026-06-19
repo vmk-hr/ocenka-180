@@ -1,0 +1,1316 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Оценка 180° — Анкета сотрудника</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Onest:wght@300;400;500;600&family=Newsreader:ital,wght@0,400;1,300&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #F4F2EE;
+    --surface: #FFFFFF;
+    --surface2: #F8F7F4;
+    --border: rgba(0,0,0,0.09);
+    --border-md: rgba(0,0,0,0.14);
+    --text: #1A1916;
+    --text-2: #6B6760;
+    --text-3: #A09D98;
+    --accent: #2D5BE3;
+    --accent-bg: #EEF2FD;
+    --accent-text: #1A3BA8;
+    --teal: #0E7B5C;
+    --teal-bg: #E3F5EE;
+    --amber: #A05C00;
+    --amber-bg: #FDF3E3;
+    --purple: #5B35C2;
+    --purple-bg: #EEEBFA;
+    --coral: #B83825;
+    --coral-bg: #FAEAE6;
+    --red: #C5342C;
+    --orange: #D4660A;
+    --yellow: #B08800;
+    --lime: #4E8C1A;
+    --blue-dark: #1A4FC5;
+    --radius: 12px;
+    --radius-sm: 8px;
+    --shadow: 0 1px 3px rgba(0,0,0,0.06), 0 4px 16px rgba(0,0,0,0.04);
+    --shadow-lg: 0 8px 32px rgba(0,0,0,0.10);
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Onest', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    line-height: 1.6;
+    font-size: 15px;
+  }
+
+  /* ─── TOP BAR ─── */
+  .topbar {
+    position: sticky; top: 0; z-index: 100;
+    background: rgba(255,255,255,0.9);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 2rem;
+    display: flex; align-items: center; justify-content: space-between;
+    height: 60px;
+  }
+  .topbar-brand { display: flex; align-items: center; gap: 10px; }
+  .topbar-logo {
+    width: 34px; height: 34px; border-radius: 9px;
+    background: var(--text);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .topbar-logo svg { width: 18px; height: 18px; fill: none; stroke: #fff; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+  .topbar-name { font-size: 14px; font-weight: 500; }
+  .topbar-sub { font-size: 12px; color: var(--text-3); }
+  .topbar-progress { display: flex; align-items: center; gap: 12px; }
+  .prog-ring-wrap { position: relative; width: 36px; height: 36px; }
+  .prog-ring-bg { fill: none; stroke: var(--border); stroke-width: 3; }
+  .prog-ring-fill { fill: none; stroke: var(--accent); stroke-width: 3; stroke-linecap: round;
+    stroke-dasharray: 88; stroke-dashoffset: 88;
+    transform: rotate(-90deg); transform-origin: center;
+    transition: stroke-dashoffset 0.5s ease; }
+  .prog-pct { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+    font-size: 10px; font-weight: 600; color: var(--accent); }
+  .prog-label { font-size: 12px; color: var(--text-2); }
+
+  /* ─── HERO ─── */
+  .hero {
+    padding: 5rem 2rem 4rem;
+    text-align: center;
+    max-width: 700px; margin: 0 auto;
+  }
+  .hero-badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: var(--text); color: #fff;
+    font-size: 11px; font-weight: 500; letter-spacing: 0.06em;
+    padding: 5px 14px; border-radius: 999px; margin-bottom: 1.5rem;
+    text-transform: uppercase;
+  }
+  .hero h1 {
+    font-family: 'Newsreader', Georgia, serif;
+    font-size: clamp(2rem, 5vw, 3.2rem);
+    font-weight: 400; line-height: 1.2;
+    margin-bottom: 1rem;
+    letter-spacing: -0.01em;
+  }
+  .hero h1 em { font-style: italic; color: var(--accent); }
+  .hero p { font-size: 16px; color: var(--text-2); max-width: 480px; margin: 0 auto; line-height: 1.7; }
+
+  /* ─── ROLE SWITCHER ─── */
+  .role-wrap { max-width: 700px; margin: 0 auto 3rem; padding: 0 2rem; }
+  .role-switcher {
+    display: grid; grid-template-columns: 1fr 1fr;
+    background: var(--surface); border-radius: var(--radius);
+    border: 1px solid var(--border); padding: 6px; gap: 6px;
+    box-shadow: var(--shadow);
+  }
+  .role-btn {
+    padding: 14px 20px; border-radius: 9px; border: none;
+    background: transparent; cursor: pointer;
+    font-family: 'Onest', sans-serif; font-size: 14px; font-weight: 400;
+    color: var(--text-2); transition: all 0.2s;
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+  }
+  .role-btn:hover { background: var(--surface2); color: var(--text); }
+  .role-btn.active {
+    background: var(--text); color: #fff; font-weight: 500;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  }
+  .role-btn svg { width: 17px; height: 17px; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+
+  /* ─── MAIN LAYOUT ─── */
+  .main { max-width: 1060px; margin: 0 auto; padding: 0 2rem 6rem; }
+
+  /* ─── META CARD ─── */
+  .card {
+    background: var(--surface); border-radius: var(--radius);
+    border: 1px solid var(--border); padding: 1.75rem;
+    margin-bottom: 1.25rem; box-shadow: var(--shadow);
+  }
+  .card-head { display: flex; align-items: flex-start; gap: 14px; margin-bottom: 1.5rem; }
+  .card-icon {
+    width: 42px; height: 42px; border-radius: 11px;
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+  }
+  .card-icon svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+  .ci-blue { background: var(--accent-bg); color: var(--accent); }
+  .ci-teal { background: var(--teal-bg); color: var(--teal); }
+  .ci-amber { background: var(--amber-bg); color: var(--amber); }
+  .ci-purple { background: var(--purple-bg); color: var(--purple); }
+  .ci-coral { background: var(--coral-bg); color: var(--coral); }
+  .card-title { font-size: 16px; font-weight: 500; margin-bottom: 2px; }
+  .card-sub { font-size: 13px; color: var(--text-2); }
+
+  .meta-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .meta-grid.full { grid-template-columns: 1fr; }
+  .field-label { font-size: 12px; color: var(--text-2); font-weight: 500; margin-bottom: 6px; letter-spacing: 0.02em; text-transform: uppercase; }
+  input[type="text"], select, textarea {
+    width: 100%; border: 1px solid var(--border-md); border-radius: var(--radius-sm);
+    padding: 10px 14px; font-size: 14px; font-family: 'Onest', sans-serif;
+    color: var(--text); background: var(--surface2);
+    transition: border-color 0.15s, background 0.15s;
+    outline: none;
+  }
+  input[type="text"]:focus, select:focus, textarea:focus {
+    border-color: var(--accent); background: #fff;
+    box-shadow: 0 0 0 3px rgba(45,91,227,0.1);
+  }
+  textarea { resize: vertical; min-height: 80px; line-height: 1.6; }
+  input::placeholder, textarea::placeholder { color: var(--text-3); }
+
+  /* ─── QUESTIONS ─── */
+  .question { padding: 1.25rem 0; border-bottom: 1px solid var(--border); }
+  .question:last-of-type { border-bottom: none; }
+  .q-text { font-size: 14px; font-weight: 500; margin-bottom: 12px; line-height: 1.55; }
+  .q-num { color: var(--text-3); font-weight: 400; margin-right: 5px; }
+
+  .scale { display: flex; gap: 4px; margin-bottom: 8px; }
+  .scale-btn {
+    flex: 1; min-width: 0; height: 42px; border-radius: var(--radius-sm);
+    border: 1px solid var(--border-md); background: var(--surface2);
+    cursor: pointer; font-family: 'Onest', sans-serif;
+    font-size: 14px; font-weight: 500; color: var(--text-2);
+    transition: all 0.15s; position: relative; overflow: hidden;
+  }
+  .scale-btn:hover { border-color: var(--text-3); color: var(--text); background: #fff; transform: translateY(-1px); }
+  .scale-btn.active { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.12); }
+  /* 1–2 красный, 3–4 оранжевый, 5–6 жёлтый, 7–8 салатовый, 9–10 синий */
+  .scale-btn.v1.active, .scale-btn.v2.active { background: #FDECEA; border-color: var(--red); color: var(--red); }
+  .scale-btn.v3.active, .scale-btn.v4.active { background: #FEF3E5; border-color: var(--orange); color: var(--orange); }
+  .scale-btn.v5.active, .scale-btn.v6.active { background: #FEFBE5; border-color: var(--yellow); color: var(--yellow); }
+  .scale-btn.v7.active, .scale-btn.v8.active { background: #EDF6E5; border-color: var(--lime); color: var(--lime); }
+  .scale-btn.v9.active, .scale-btn.v10.active { background: var(--accent-bg); border-color: var(--accent); color: var(--accent); }
+  .scale-meta { display: flex; justify-content: space-between; }
+  .scale-meta span { font-size: 11px; color: var(--text-3); }
+
+  /* ─── GRADATION LEGEND (по 1 значению на балл) ─── */
+  .eval-target {
+    display: flex; flex-direction: column; gap: 1px;
+    background: var(--accent-bg); border: 1px solid var(--accent);
+    border-radius: var(--radius-sm); padding: 8px 14px; margin-bottom: 14px;
+  }
+  .eval-target-label { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; color: var(--accent); }
+  .eval-target-name { font-size: 15px; font-weight: 600; color: var(--text); line-height: 1.2; }
+  .qa-layout { display: flex; align-items: flex-start; gap: 24px; }
+  .scale-aside { position: sticky; top: 60px; width: 320px; flex: none; align-self: flex-start; z-index: 40; }
+  .qa-main { flex: 1; min-width: 0; }
+  .legend-card {
+    padding: 1.5rem 1.6rem;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.07);
+  }
+  .legend-card .card-head { margin-bottom: 18px; }
+  .legend-list {
+    display: grid; grid-template-columns: 1fr; gap: 13px;
+  }
+  .legend-row { display: flex; align-items: center; gap: 12px; }
+  .legend-num {
+    flex: none; width: 32px; height: 32px; border-radius: 9px;
+    display: flex; align-items: center; justify-content: center;
+    color: #fff; font-size: 15px; font-weight: 600;
+  }
+  .legend-name { font-size: 14px; color: var(--text); line-height: 1.35; }
+
+  /* уровень компетенции в результатах */
+  .score-level { font-size: 11px; font-weight: 500; padding: 2px 8px; border-radius: 999px; white-space: nowrap; }
+  .lvl-red    { background: #FDECEA; color: var(--red); }
+  .lvl-orange { background: #FEF3E5; color: var(--orange); }
+  .lvl-yellow { background: #FEFBE5; color: var(--yellow); }
+  .lvl-lime   { background: #EDF6E5; color: var(--lime); }
+  .lvl-blue   { background: var(--accent-bg); color: var(--accent); }
+
+  .comment-wrap { margin-top: 1.25rem; padding-top: 1.25rem; border-top: 1px solid var(--border); }
+  .comment-label { font-size: 12px; color: var(--text-3); font-weight: 500; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.03em; }
+  .optional-tag { font-weight: 400; text-transform: none; letter-spacing: 0; color: var(--text-3); font-size: 11px; }
+  .required-tag { font-weight: 500; text-transform: none; letter-spacing: 0; color: var(--red); font-size: 11px; }
+  .optional-tag { font-weight: 500; text-transform: none; letter-spacing: 0; color: var(--text-3); font-size: 11px; }
+
+  /* карточка-инструкция */
+  .instr-card { background: linear-gradient(180deg, var(--accent-bg), var(--surface)); border-color: var(--accent); }
+  .instr-list { margin: 4px 0 0; padding-left: 1.25rem; display: flex; flex-direction: column; gap: 10px; }
+  .instr-list li { font-size: 14px; color: var(--text-2); line-height: 1.55; padding-left: 4px; }
+  .instr-list li b { color: var(--text); font-weight: 600; }
+  .instr-list li::marker { color: var(--accent); font-weight: 700; }
+  .field-error { border-color: var(--red) !important; box-shadow: 0 0 0 3px rgba(214,69,65,0.12) !important; }
+
+  /* стартовый экран выбора категории */
+  #category-screen { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 2rem 1rem; }
+  .cat-screen-inner { max-width: 720px; width: 100%; text-align: center; }
+  .cat-title { font-size: 2rem; font-weight: 600; letter-spacing: -0.02em; margin: 0 0 8px; color: var(--text); }
+  .cat-subtitle { font-size: 15px; color: var(--text-2); line-height: 1.55; margin: 0 auto 2.5rem; max-width: 520px; }
+  .cat-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .cat-card {
+    background: var(--surface); border: 1px solid var(--border-md); border-radius: var(--radius);
+    padding: 2rem 1.5rem; cursor: pointer; text-align: left; transition: all 0.18s;
+    font-family: 'Onest', sans-serif; box-shadow: var(--shadow);
+  }
+  .cat-card:hover { border-color: var(--accent); transform: translateY(-3px); box-shadow: 0 10px 28px rgba(0,0,0,0.1); }
+  .cat-card-icon {
+    width: 48px; height: 48px; border-radius: 12px; background: var(--accent-bg);
+    display: flex; align-items: center; justify-content: center; margin-bottom: 16px;
+  }
+  .cat-card-icon svg { width: 26px; height: 26px; color: var(--accent); }
+  .cat-card-name { font-size: 22px; font-weight: 700; color: var(--text); margin-bottom: 8px; letter-spacing: 0.04em; }
+  .cat-card-desc { font-size: 13.5px; color: var(--text-2); line-height: 1.55; }
+  .cat-back {
+    background: var(--surface2); border: 1px solid var(--border-md); border-radius: 8px;
+    width: 34px; height: 34px; cursor: pointer; display: flex; align-items: center; justify-content: center;
+    color: var(--text-2); transition: all 0.15s; flex: none;
+  }
+  .cat-back:hover { background: #fff; border-color: var(--text-3); color: var(--text); }
+  .cat-back svg { width: 17px; height: 17px; }
+  @media (max-width: 600px) { .cat-cards { grid-template-columns: 1fr; } .cat-title { font-size: 1.6rem; } }
+
+  /* расшифровка категорий A/B/C */
+  .cat-item { border-left: 3px solid var(--border-md); padding: 8px 0 8px 14px; margin-top: 12px; }
+  .cat-item:first-of-type { margin-top: 4px; }
+  .cat-name { font-size: 14px; font-weight: 600; color: var(--text); margin-bottom: 3px; }
+  .cat-desc { font-size: 13px; color: var(--text-2); line-height: 1.5; }
+  .cat-a { border-left-color: #2E9E63; }
+  .cat-b { border-left-color: #D6B838; }
+  .cat-c { border-left-color: #D64541; }
+
+  /* блок со списком пропущенных пунктов */
+  .missing-box { border: 1px solid var(--red); background: #FDECEA; border-radius: var(--radius-sm); padding: 14px 16px; margin-bottom: 1rem; }
+  .missing-head { display: flex; align-items: center; gap: 8px; font-size: 13.5px; font-weight: 600; color: var(--red); margin-bottom: 10px; }
+  .missing-head svg { width: 16px; height: 16px; flex: none; }
+  .missing-list { display: flex; flex-wrap: wrap; gap: 8px; }
+  .missing-link {
+    display: inline-block; cursor: pointer; font-size: 12.5px; color: var(--red);
+    background: #fff; border: 1px solid var(--red); border-radius: 999px; padding: 5px 12px;
+    transition: all 0.15s;
+  }
+  .missing-link:hover { background: var(--red); color: #fff; }
+
+  /* подсветка вопроса без ответа и вспышка при переходе */
+  .question.q-missing { border-left: 3px solid var(--red); padding-left: 12px; margin-left: -15px; }
+  .flash { animation: flashHl 1.6s ease-out; border-radius: var(--radius-sm); }
+  @keyframes flashHl {
+    0%, 35% { background: rgba(214,69,65,0.12); }
+    100% { background: transparent; }
+  }
+
+  /* ─── SUBMIT ─── */
+  .submit-area { margin-top: 2rem; }
+  .submit-note { font-size: 13px; color: var(--text-3); margin-bottom: 1rem; display: flex; align-items: center; gap: 6px; }
+  .submit-note svg { width: 14px; height: 14px; flex-shrink: 0; }
+  .btn-submit {
+    width: 100%; padding: 16px; border-radius: var(--radius);
+    background: var(--text); color: #fff; border: none;
+    font-family: 'Onest', sans-serif; font-size: 15px; font-weight: 500;
+    cursor: pointer; transition: all 0.2s;
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.18);
+    letter-spacing: 0.01em;
+  }
+  .btn-submit:hover { background: #333; box-shadow: 0 6px 24px rgba(0,0,0,0.25); transform: translateY(-1px); }
+  .btn-submit:active { transform: translateY(0); }
+  .btn-submit svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+  /* ─── SUCCESS ─── */
+  .success-screen { display: none; max-width: 700px; margin: 0 auto; padding: 4rem 2rem 6rem; }
+  .success-top { text-align: center; margin-bottom: 3rem; }
+  .success-icon-wrap {
+    width: 72px; height: 72px; border-radius: 50%;
+    background: var(--teal-bg); display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 1.5rem;
+  }
+  .success-icon-wrap svg { width: 32px; height: 32px; fill: none; stroke: var(--teal); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+  .success-top h2 { font-family: 'Newsreader', Georgia, serif; font-size: 2rem; font-weight: 400; margin-bottom: 0.5rem; }
+  .success-top p { font-size: 15px; color: var(--text-2); line-height: 1.7; }
+
+  .results-card { background: var(--surface); border-radius: var(--radius); border: 1px solid var(--border); padding: 2rem; margin-bottom: 1.25rem; box-shadow: var(--shadow); }
+  .results-card h3 { font-size: 16px; font-weight: 500; margin-bottom: 1.5rem; }
+  .score-row { display: flex; align-items: center; gap: 14px; margin-bottom: 14px; }
+  .score-row:last-child { margin-bottom: 0; }
+  .score-name { font-size: 13px; color: var(--text-2); width: 200px; flex-shrink: 0; line-height: 1.4; }
+  .score-track { flex: 1; height: 8px; background: var(--surface2); border-radius: 999px; overflow: hidden; border: 1px solid var(--border); }
+  .score-fill { height: 100%; border-radius: 999px; background: linear-gradient(90deg, var(--accent), #4F7FFF); transition: width 0.8s cubic-bezier(.16,1,.3,1); }
+  .score-val { font-size: 14px; font-weight: 600; min-width: 44px; text-align: right; color: var(--text); }
+  .score-val span { font-size: 12px; font-weight: 400; color: var(--text-3); }
+  .overall-row {
+    display: flex; align-items: center; justify-content: space-between;
+    border-top: 1px solid var(--border); margin-top: 1.25rem; padding-top: 1.25rem;
+  }
+  .overall-label { font-size: 15px; font-weight: 500; }
+  .overall-num { font-size: 2rem; font-weight: 600; color: var(--accent); }
+  .overall-num small { font-size: 16px; font-weight: 400; color: var(--text-3); }
+
+  .answers-card { background: var(--surface); border-radius: var(--radius); border: 1px solid var(--border); padding: 2rem; margin-bottom: 1.25rem; box-shadow: var(--shadow); }
+  .answers-card h3 { font-size: 16px; font-weight: 500; margin-bottom: 1rem; }
+  .open-answer { margin-bottom: 1.25rem; padding-bottom: 1.25rem; border-bottom: 1px solid var(--border); }
+  .open-answer:last-child { margin-bottom: 0; padding-bottom: 0; border-bottom: none; }
+  .oa-label { font-size: 12px; color: var(--text-3); font-weight: 500; text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 6px; }
+  .oa-text { font-size: 14px; line-height: 1.6; color: var(--text); white-space: pre-line; }
+  .oa-empty { font-size: 14px; color: var(--text-3); font-style: italic; }
+
+  .print-area { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 1.5rem; }
+  .btn-secondary {
+    flex: 1; min-width: 130px; padding: 12px; border-radius: var(--radius-sm);
+    border: 1px solid var(--border-md); background: var(--surface);
+    font-family: 'Onest', sans-serif; font-size: 14px; font-weight: 500;
+    color: var(--text); cursor: pointer; transition: all 0.15s;
+    display: flex; align-items: center; justify-content: center; gap: 6px;
+  }
+  .btn-secondary:hover { background: var(--surface2); border-color: var(--text-3); }
+  .btn-secondary svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+
+  .hr-status {
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+    margin: 1.25rem auto 0; max-width: 520px;
+    padding: 12px 18px; border-radius: var(--radius-sm);
+    font-size: 13.5px; font-weight: 500; line-height: 1.4;
+  }
+  .hr-status.ok   { background: var(--teal-bg);  color: var(--teal); }
+  .hr-status.info { background: var(--accent-bg); color: var(--accent-text); }
+  .hr-status.warn { background: var(--amber-bg); color: var(--amber); }
+
+  /* ─── FOOTER ─── */
+  .footer { text-align: center; padding: 2rem; font-size: 12px; color: var(--text-3); border-top: 1px solid var(--border); margin-top: 2rem; }
+
+  /* ─── PRINT ─── */
+  @media print {
+    .topbar, .role-wrap, .submit-area, .print-area, .footer { display: none !important; }
+    body { background: #fff; }
+    .card, .results-card, .answers-card { box-shadow: none; border: 1px solid #ddd; }
+    .success-screen { display: block !important; }
+    #form-area { display: none !important; }
+  }
+
+  @media (max-width: 840px) {
+    .main { max-width: 760px; }
+    .qa-layout { display: block; }
+    .scale-aside { position: sticky; top: 60px; width: auto; }
+    .legend-list { grid-template-columns: 1fr 1fr; gap: 8px 18px; }
+  }
+
+  @media (max-width: 600px) {
+    .meta-grid { grid-template-columns: 1fr; }
+    .hero { padding: 3rem 1.5rem 2rem; }
+    .main, .role-wrap, .success-screen { padding-left: 1rem; padding-right: 1rem; }
+    .score-name { width: 110px; }
+    .topbar { padding: 0 1rem; }
+    .prog-label { display: none; }
+    .card { padding: 1.25rem; }
+    .scale { gap: 3px; }
+    .scale-btn { height: 38px; font-size: 12px; }
+    .legend-list { grid-template-columns: 1fr 1fr; gap: 4px 10px; }
+    .legend-card { padding: 0.85rem 1rem; }
+    .legend-card .card-sub { display: none; }
+    .legend-card .card-head { margin-bottom: 8px; }
+    .legend-num { width: 22px; height: 22px; font-size: 12px; }
+    .legend-name { font-size: 10.5px; }
+    .score-row { flex-wrap: wrap; }
+  }
+</style>
+</head>
+<body>
+
+<!-- CATEGORY SELECT (стартовый экран) -->
+<div id="category-screen">
+  <div class="cat-screen-inner">
+    <div class="hero-badge" style="margin:0 auto 1.5rem">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/></svg>
+      Оценка персонала 180°
+    </div>
+    <h1 class="cat-title">Выберите категорию</h1>
+    <p class="cat-subtitle">Категория зависит от места работы сотрудника. Если вы руководитель — выберите категорию того сотрудника, которого оцениваете.</p>
+    <div class="cat-cards">
+      <button class="cat-card" onclick="selectCategory('aup')">
+        <div class="cat-card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 3v18M3 9h6"/></svg></div>
+        <div class="cat-card-name">ОФИС</div>
+        <div class="cat-card-desc">Офисный и административный персонал. Оценка по 9 блокам компетенций.</div>
+      </button>
+      <button class="cat-card" onclick="selectCategory('itr')">
+        <div class="cat-card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a4 4 0 00-5.4 5.4l-6 6a2 2 0 102.8 2.8l6-6a4 4 0 005.4-5.4l-2.6 2.6-2.1-2.1z"/></svg></div>
+        <div class="cat-card-name">ЗАВОД</div>
+        <div class="cat-card-desc">Производственный персонал. Оценка по 10 блокам, включая безопасность труда.</div>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- TOP BAR -->
+<header class="topbar" id="topbar" style="display:none">
+  <div class="topbar-brand">
+    <div class="topbar-logo">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v4l3 3"/></svg>
+    </div>
+    <div>
+      <div class="topbar-name">Система оценки 180° · <span id="cat-label-top">ЗАВОД</span></div>
+      <div class="topbar-sub" id="role-label-top">Самооценка</div>
+    </div>
+  </div>
+  <div class="topbar-progress">
+    <button class="cat-back" onclick="backToCategory()" title="Сменить категорию">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+    </button>
+    <span class="prog-label" id="prog-label">0 из 15 вопросов</span>
+    <div class="prog-ring-wrap">
+      <svg viewBox="0 0 36 36" width="36" height="36">
+        <circle class="prog-ring-bg" cx="18" cy="18" r="14"/>
+        <circle class="prog-ring-fill" id="ring-fill" cx="18" cy="18" r="14"/>
+      </svg>
+      <div class="prog-pct" id="ring-pct">0</div>
+    </div>
+  </div>
+</header>
+
+<!-- FORM AREA -->
+<div id="form-area" style="display:none">
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-badge">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/></svg>
+      Оценка персонала
+    </div>
+    <h1>Анкета оценки<br><em>180 градусов</em></h1>
+    <p>Ваши честные ответы помогают сотрудникам расти. Все данные конфиденциальны и используются только в целях развития.</p>
+  </div>
+
+  <!-- ROLE SWITCHER -->
+  <div class="role-wrap">
+    <div class="role-switcher">
+      <button class="role-btn active" id="btn-self" onclick="switchRole('self')">
+        <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        Самооценка сотрудника
+      </button>
+      <button class="role-btn" id="btn-manager" onclick="switchRole('manager')">
+        <svg viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/><line x1="12" y1="12" x2="12" y2="16"/><line x1="10" y1="14" x2="14" y2="14"/></svg>
+        Оценка руководителем
+      </button>
+    </div>
+  </div>
+
+  <div class="main">
+
+    <!-- ИНСТРУКЦИЯ -->
+    <div class="card instr-card">
+      <div class="card-head">
+        <div class="card-icon ci-blue">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+        </div>
+        <div>
+          <div class="card-title">Как заполнять анкету</div>
+          <div class="card-sub">Пожалуйста, прочитайте перед началом</div>
+        </div>
+      </div>
+      <ol class="instr-list">
+        <li>Укажите данные сотрудника вверху. Руководитель дополнительно вписывает своё имя.</li>
+        <li>Оцените каждый вопрос по шкале <b>от 1 до 10</b>, где 1 — минимум, 10 — максимум. Расшифровка каждого балла — на шкале слева (на телефоне — сверху).</li>
+        <li>Отвечайте честно и по фактам: анкета конфиденциальна, результаты видит только HR-отдел.</li>
+        <li><b>Комментарий к блоку обязателен</b>, если хотя бы по одному вопросу выбрана крайняя оценка — <b>5 и ниже</b> или <b>9 и выше</b>: коротко поясните, что повлияло на такую оценку. При средних оценках (6–8) комментарий — по желанию.</li>
+        <li>В конце ответьте на открытые вопросы — они обязательны.</li>
+        <li>Если что-то пропущено, при нажатии «Отправить» появится список со ссылками на незаполненные пункты — по клику можно сразу перейти к нужному.</li>
+      </ol>
+    </div>
+
+    <!-- META -->
+    <div class="card">
+      <div class="card-head">
+        <div class="card-icon ci-blue">
+          <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        </div>
+        <div>
+          <div class="card-title" id="info-title">Оцениваемый сотрудник</div>
+          <div class="card-sub" id="info-sub">Данные сотрудника, которого оцениваем</div>
+        </div>
+      </div>
+      <div class="meta-grid" style="margin-bottom:14px">
+        <div>
+          <div class="field-label" id="emp-name-label">ФИО оцениваемого сотрудника</div>
+          <input type="text" id="emp-name" placeholder="Иванов Иван Иванович" oninput="updateEvalTarget()">
+        </div>
+        <div>
+          <div class="field-label">Должность</div>
+          <input type="text" id="emp-role" placeholder="Менеджер проекта">
+        </div>
+      </div>
+      <div class="meta-grid" style="margin-bottom:14px">
+        <div>
+          <div class="field-label">Отдел / подразделение</div>
+          <input type="text" id="emp-dept" placeholder="Отдел продаж">
+        </div>
+        <div>
+          <div class="field-label">Период оценки</div>
+          <input type="text" id="eval-period" value="1-полугодие 2026" readonly>
+        </div>
+      </div>
+      <div id="evaluator-field" style="display:none; margin-top:4px; padding-top:16px; border-top:1px solid var(--border)">
+        <div class="field-label" style="color:var(--accent)">Кто оценивает — ФИО руководителя</div>
+        <input type="text" id="eval-name" placeholder="Петрова Мария Александровна" oninput="this.classList.remove('field-error')">
+        <div style="font-size:12px; color:var(--text-3); margin-top:6px">Укажите своё имя. В отчёте будет видно, кто из руководителей поставил оценку.</div>
+      </div>
+    </div>
+
+    <!-- DYNAMIC SECTIONS -->
+    <div id="sections"></div>
+
+    <!-- SUBMIT -->
+    <div class="submit-area">
+      <div class="missing-box" id="missing-box" style="display:none">
+        <div class="missing-head">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          <span id="missing-title">Остались незаполненные пункты</span>
+        </div>
+        <div class="missing-list" id="missing-list"></div>
+      </div>
+      <div class="submit-note">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        Ответьте на все вопросы и все открытые вопросы. Комментарий к блоку обязателен, если в нём есть оценки 5 и ниже или 9 и выше. После отправки результаты поступят в HR-отдел.
+      </div>
+      <button class="btn-submit" onclick="submitForm()">
+        <svg viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+        Отправить анкету
+      </button>
+    </div>
+
+  </div>
+</div>
+
+<!-- SUCCESS SCREEN -->
+<div class="success-screen" id="success-area">
+  <div class="success-top">
+    <div class="success-icon-wrap">
+      <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+    </div>
+    <h2>Анкета отправлена!</h2>
+    <p id="success-desc">Спасибо за участие. Ваши ответы переданы в HR-отдел.</p>
+    <div class="hr-status" id="hr-status" style="display:none"></div>
+  </div>
+
+  <div class="print-area">
+    <button class="btn-secondary" onclick="resetForm()">
+      <svg viewBox="0 0 24 24"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 102.13-9.36L1 10"/></svg>
+      Заполнить новую анкету
+    </button>
+  </div>
+</div>
+
+<footer class="footer">
+  Система оценки персонала 180° &nbsp;·&nbsp; Конфиденциально &nbsp;·&nbsp; Результаты используются только в целях развития
+</footer>
+
+<script>
+const selfSections = [
+  { id:'b1', title:'Выполнение результатов', sub:'Качество, сроки и достижение результата', iconClass:'ci-blue',
+    iconSvg:'<circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/>',
+    questions:[
+      'Я выполняю поставленные задачи качественно и в установленные сроки',
+      'Я достигаю ожидаемых результатов по своей должности',
+      'Я довожу начатые задачи до завершения',
+      'Я поддерживаю необходимый уровень производительности труда'
+    ]},
+  { id:'b2', title:'Профессиональные навыки', sub:'Знания, стандарты и развитие', iconClass:'ci-teal',
+    iconSvg:'<path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/>',
+    questions:[
+      'Я обладаю необходимыми знаниями и навыками для выполнения своей работы',
+      'Я применяю профессиональные знания на практике',
+      'Я соблюдаю стандарты качества и требования к работе',
+      'Я развиваю свои профессиональные знания и навыки'
+    ]},
+  { id:'b3', title:'Коммуникация и взаимодействие', sub:'Общение с коллегами и клиентами', iconClass:'ci-amber',
+    iconSvg:'<path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/>',
+    questions:[
+      'Я конструктивно взаимодействую с коллегами',
+      'Я своевременно предоставляю необходимую информацию',
+      'Я уважительно отношусь к коллегам и клиентам',
+      'Я эффективно взаимодействую с внутренними и внешними клиентами'
+    ]},
+  { id:'b4', title:'Ответственность и дисциплина', sub:'Дисциплина, обязательства, регламенты', iconClass:'ci-purple',
+    iconSvg:'<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>',
+    questions:[
+      'Я соблюдаю трудовую дисциплину и правила компании',
+      'Я выполняю взятые на себя обязательства и договорённости',
+      'Я беру ответственность за результат своей работы',
+      'Я соблюдаю внутренние регламенты и стандарты компании'
+    ]},
+  { id:'b5', title:'Инициативность', sub:'Идеи, инициатива, эффективность', iconClass:'ci-coral',
+    iconSvg:'<polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>',
+    questions:[
+      'Я предлагаю идеи по улучшению рабочих процессов',
+      'Я проявляю инициативу в решении рабочих задач',
+      'Я готов(а) брать на себя дополнительную ответственность',
+      'Я стремлюсь повышать эффективность своей работы'
+    ]},
+  { id:'b6', title:'Личностные качества', sub:'Обратная связь, адаптивность, выдержка', iconClass:'ci-blue',
+    iconSvg:'<path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/>',
+    questions:[
+      'Я открыт(а) к обратной связи и использую её для развития',
+      'Я адаптируюсь к изменениям и новым условиям работы',
+      'Я сохраняю самообладание в сложных ситуациях',
+      'Я демонстрирую профессиональное и уважительное поведение'
+    ]},
+  { id:'b7', title:'Потенциал развития', sub:'Интерес к развитию и новым знаниям', iconClass:'ci-teal',
+    iconSvg:'<polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/>',
+    questions:[
+      'Я заинтересован(а) в профессиональном развитии',
+      'Я осваиваю новые знания и навыки',
+      'Я готов(а) к расширению зоны ответственности',
+      'Я вижу своё дальнейшее развитие и карьерные перспективы в компании'
+    ]},
+  { id:'b8', title:'Корпоративная культура', sub:'Ценности, атмосфера, командная работа', iconClass:'ci-amber',
+    iconSvg:'<path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/>',
+    questions:[
+      'Я соблюдаю принятые правила и ценности компании',
+      'Я уважительно отношусь к коллегам и поддерживаю здоровую рабочую атмосферу',
+      'Я поддерживаю положительную репутацию компании',
+      'Я способствую командной работе и достижению общих целей'
+    ]},
+  { id:'safety', safety:true, title:'Безопасность и стандарты труда', sub:'Для производственных подразделений (ИТР)', iconClass:'ci-coral',
+    iconSvg:'<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="16" x2="12.01" y2="16"/>',
+    questions:[
+      'Я соблюдаю требования охраны труда и техники безопасности',
+      'Я соблюдаю технологические инструкции и регламенты',
+      'Я бережно отношусь к оборудованию и инструментам',
+      'Я своевременно сообщаю о рисках, нарушениях и неисправностях'
+    ]},
+  { id:'b10', title:'Потенциал и перспективы', sub:'Готовность к росту и сложным задачам', iconClass:'ci-purple',
+    iconSvg:'<path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 00-2.91-.09z"/><path d="M12 15l-3-3a22 22 0 012-3.95A12.88 12.88 0 0122 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 01-4 2z"/>',
+    questions:[
+      'Я готов(а) к расширению своей зоны ответственности',
+      'Я готов(а) выполнять более сложные задачи и осваивать новые направления работы',
+      'Я считаю, что обладаю потенциалом для профессионального и карьерного роста',
+      'Я считаю, что обладаю потенциалом для дальнейшего развития в компании'
+    ]},
+  { id:'b11', title:'Индекс токсичности', sub:'Этика, уважение и атмосфера в коллективе', iconClass:'ci-teal',
+    iconSvg:'<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/>',
+    questions:[
+      'Я воздерживаюсь от распространения слухов и непроверенной информации',
+      'Я стараюсь конструктивно решать разногласия и не провоцирую конфликты',
+      'Я беру ответственность за свои решения, действия и результаты работы',
+      'Я поддерживаю принятые решения компании и руководства, даже если имею другое мнение'
+    ]}
+];
+
+const managerSections = [
+  { id:'b1', title:'Выполнение результатов', sub:'Качество, сроки и достижение результата', iconClass:'ci-blue',
+    iconSvg:'<circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/>',
+    questions:[
+      'Сотрудник выполняет поставленные задачи качественно и в установленные сроки',
+      'Сотрудник достигает ожидаемых результатов по своей должности',
+      'Сотрудник доводит начатые задачи до завершения',
+      'Сотрудник поддерживает необходимый уровень производительности труда'
+    ]},
+  { id:'b2', title:'Профессиональные навыки', sub:'Знания, стандарты и развитие', iconClass:'ci-teal',
+    iconSvg:'<path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/>',
+    questions:[
+      'Сотрудник обладает необходимыми знаниями и навыками для выполнения работы',
+      'Сотрудник применяет профессиональные знания на практике',
+      'Сотрудник соблюдает стандарты качества и требования к работе',
+      'Сотрудник развивает профессиональные знания и навыки'
+    ]},
+  { id:'b3', title:'Коммуникация и взаимодействие', sub:'Общение с коллегами и клиентами', iconClass:'ci-amber',
+    iconSvg:'<path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/>',
+    questions:[
+      'Сотрудник конструктивно взаимодействует с коллегами',
+      'Сотрудник своевременно предоставляет необходимую информацию',
+      'Сотрудник уважительно относится к коллегам и клиентам',
+      'Сотрудник эффективно взаимодействует с внутренними и внешними клиентами'
+    ]},
+  { id:'b4', title:'Ответственность и дисциплина', sub:'Дисциплина, обязательства, регламенты', iconClass:'ci-purple',
+    iconSvg:'<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>',
+    questions:[
+      'Сотрудник соблюдает трудовую дисциплину и правила компании',
+      'Сотрудник выполняет взятые на себя обязательства и договорённости',
+      'Сотрудник берёт ответственность за результат своей работы',
+      'Сотрудник соблюдает внутренние регламенты и стандарты компании'
+    ]},
+  { id:'b5', title:'Инициативность', sub:'Идеи, инициатива, эффективность', iconClass:'ci-coral',
+    iconSvg:'<polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>',
+    questions:[
+      'Сотрудник предлагает идеи по улучшению рабочих процессов',
+      'Сотрудник проявляет инициативу в решении рабочих задач',
+      'Сотрудник готов брать на себя дополнительную ответственность',
+      'Сотрудник стремится повышать эффективность своей работы'
+    ]},
+  { id:'b6', title:'Личностные качества', sub:'Обратная связь, адаптивность, выдержка', iconClass:'ci-blue',
+    iconSvg:'<path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/>',
+    questions:[
+      'Сотрудник открыт к обратной связи и использует её для развития',
+      'Сотрудник адаптируется к изменениям и новым условиям работы',
+      'Сотрудник сохраняет самообладание в сложных ситуациях',
+      'Сотрудник демонстрирует профессиональное и уважительное поведение'
+    ]},
+  { id:'b7', title:'Потенциал развития', sub:'Интерес к развитию и новым знаниям', iconClass:'ci-teal',
+    iconSvg:'<polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/>',
+    questions:[
+      'Сотрудник заинтересован в профессиональном развитии',
+      'Сотрудник осваивает новые знания и навыки',
+      'Сотрудник готов к расширению зоны ответственности',
+      'Сотрудник обладает потенциалом для дальнейшего роста в компании'
+    ]},
+  { id:'b8', title:'Корпоративная культура', sub:'Ценности, атмосфера, командная работа', iconClass:'ci-amber',
+    iconSvg:'<path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/>',
+    questions:[
+      'Сотрудник соблюдает принятые правила и ценности компании',
+      'Сотрудник уважительно относится к коллегам и поддерживает здоровую рабочую атмосферу',
+      'Сотрудник поддерживает положительную репутацию компании',
+      'Сотрудник способствует командной работе и достижению общих целей'
+    ]},
+  { id:'safety', safety:true, title:'Безопасность и стандарты труда', sub:'Для производственных подразделений (ИТР)', iconClass:'ci-coral',
+    iconSvg:'<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="16" x2="12.01" y2="16"/>',
+    questions:[
+      'Сотрудник соблюдает требования охраны труда и техники безопасности',
+      'Сотрудник соблюдает технологические инструкции и регламенты',
+      'Сотрудник бережно относится к оборудованию и инструментам',
+      'Сотрудник своевременно сообщает о рисках, нарушениях и неисправностях'
+    ]},
+  { id:'b10', title:'Потенциал и перспективы', sub:'Готовность к росту и сложным задачам', iconClass:'ci-purple',
+    iconSvg:'<path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 00-2.91-.09z"/><path d="M12 15l-3-3a22 22 0 012-3.95A12.88 12.88 0 0122 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 01-4 2z"/>',
+    questions:[
+      'Сотрудник готов к расширению зоны ответственности',
+      'Сотрудник способен выполнять более сложные задачи',
+      'Сотрудник обладает потенциалом для карьерного роста',
+      'Сотрудник обладает потенциалом для дальнейшего развития в компании'
+    ]},
+  { id:'b11', title:'Индекс токсичности', sub:'Этика, уважение и атмосфера в коллективе', iconClass:'ci-teal',
+    iconSvg:'<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/>',
+    questions:[
+      'Сотрудник воздерживается от распространения слухов, сплетен и непроверенной информации',
+      'Сотрудник конструктивно решает разногласия и не провоцирует конфликты',
+      'Сотрудник берёт ответственность за свои решения, действия и результаты работы',
+      'Сотрудник поддерживает принятые решения компании и руководства, даже если имеет другое мнение'
+    ]}
+];
+
+const openQuestionsMap = {
+  self: [
+    'Какие ваши сильные стороны помогают вам достигать результатов?',
+    'Что вы хотели бы развить в себе в следующем периоде?',
+    'Что может помочь вам работать ещё эффективнее?',
+    'Хотели бы вы в будущем развиваться и брать на себя больше ответственности в компании? Почему?'
+  ],
+  manager: [
+    'Назовите ключевые сильные стороны сотрудника',
+    'Какие зоны роста вы рекомендуете сотруднику?',
+    'Какая поддержка или ресурсы помогут сотруднику повысить эффективность?',
+    'Рассматриваете ли вы сотрудника для развития и продвижения внутри компании? Почему?',
+    'Итоговая категория сотрудника (A / B / C)'
+  ]
+};
+
+const scaleLabels = ['1 — минимум', '10 — максимум'];
+
+// Разграничение: своё значение для каждого балла от 1 до 10
+const scaleGradation = [
+  { v: 1,  label: 'Не проявляется',                      color: '#D64541' },
+  { v: 2,  label: 'Проявляется очень редко',             color: '#E06B3E' },
+  { v: 3,  label: 'Проявляется слабо',                   color: '#E8893C' },
+  { v: 4,  label: 'Ниже ожидаемого уровня',              color: '#E3A53A' },
+  { v: 5,  label: 'Соответствует минимальным требованиям', color: '#D6B838' },
+  { v: 6,  label: 'Соответствует требованиям',           color: '#B6C03A' },
+  { v: 7,  label: 'Хороший уровень',                     color: '#8DBE45' },
+  { v: 8,  label: 'Выше ожидаемого уровня',              color: '#5FB45F' },
+  { v: 9,  label: 'Высокий уровень',                     color: '#3DA968' },
+  { v: 10, label: 'Образцовый уровень',                  color: '#2E9E63' }
+];
+
+// По баллу (в т.ч. среднему) вернуть ближайшее значение шкалы
+function getLevel(score) {
+  let i = Math.round(Number(score)) - 1;
+  if (i < 0) i = 0;
+  if (i > 9) i = 9;
+  return scaleGradation[i];
+}
+
+// ══════════════════════════════════════════════════════════════
+//  НАСТРОЙКА ОТПРАВКИ В HR
+//  Вставьте сюда URL вашего приёмника данных (Google Apps Script,
+//  Formspree, n8n, собственный сервер и т.п.). Если оставить пустым —
+//  анкета работает локально: результаты можно скачать или распечатать.
+const HR_WEBHOOK_URL = 'https://script.google.com/macros/s/AKfycbwuf56wlqwzqybwU-Vm3ktzmG6o01dx1h6RL5rDNabhAlnggDm00LWywUrbBfZd7dnkzA/exec';
+// ══════════════════════════════════════════════════════════════
+
+let currentRole = 'self';
+let currentCategory = 'itr';   // 'itr' (все блоки) или 'aup' (без блока безопасности)
+let answers = {};
+let openAnswers = { 'open-0': '', 'open-1': '', 'open-2': '' };
+
+// Выбор категории на стартовом экране
+function selectCategory(cat) {
+  currentCategory = cat;
+  document.getElementById('category-screen').style.display = 'none';
+  document.getElementById('topbar').style.display = 'flex';
+  document.getElementById('form-area').style.display = 'block';
+  document.getElementById('cat-label-top').textContent = cat === 'itr' ? 'ЗАВОД' : 'ОФИС';
+  window.scrollTo({ top: 0 });
+  switchRole('self');
+}
+
+function backToCategory() {
+  document.getElementById('form-area').style.display = 'none';
+  document.getElementById('topbar').style.display = 'none';
+  document.getElementById('success-area').style.display = 'none';
+  document.getElementById('category-screen').style.display = 'flex';
+  window.scrollTo({ top: 0 });
+}
+
+// Собрать все данные анкеты в один объект
+function buildPayload() {
+  const sections = getSections();
+  const competencies = sections.map((sec, si) => {
+    const qs = sec.questions.map((q, qi) => ({ question: q, score: answers[`${si}-${qi}`] || null }));
+    const sum = qs.reduce((a, x) => a + (x.score || 0), 0);
+    const avg = +(sum / qs.length).toFixed(2);
+    return { competency: sec.title, average: avg, level: getLevel(avg).label, comment: openAnswers[`comment-${si}`] || '', questions: qs };
+  });
+  const allScores = competencies.flatMap(c => c.questions.map(q => q.score || 0));
+  const overall = +(allScores.reduce((a, b) => a + b, 0) / allScores.length).toFixed(2);
+  const openQs = openQuestionsMap[currentRole];
+
+  return {
+    type: currentRole === 'self' ? 'Самооценка' : 'Оценка руководителем',
+    category: currentCategory === 'itr' ? 'ЗАВОД' : 'ОФИС',
+    submittedAt: new Date().toISOString(),
+    employee: {
+      name: document.getElementById('emp-name').value.trim(),
+      role: document.getElementById('emp-role').value.trim(),
+      department: document.getElementById('emp-dept').value.trim(),
+      period: document.getElementById('eval-period').value.trim()
+    },
+    evaluator: currentRole === 'manager' ? document.getElementById('eval-name').value.trim() : 'Сам сотрудник',
+    overallScore: overall,
+    overallLevel: getLevel(overall).label,
+    scaleMax: 10,
+    competencies,
+    openAnswers: openQs.map((q, i) => ({ question: q, answer: openAnswers[`open-${i}`] || '' }))
+  };
+}
+
+// Отправить данные на сервер HR (если URL задан)
+async function sendToHR(payload) {
+  if (!HR_WEBHOOK_URL) return { ok: false, skipped: true };
+  try {
+    await fetch(HR_WEBHOOK_URL, {
+      method: 'POST',
+      mode: 'no-cors',                          // для Google Apps Script
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' }, // не вызывает preflight
+      body: JSON.stringify(payload)
+    });
+    return { ok: true };
+  } catch (e) {
+    console.error('Ошибка отправки в HR:', e);
+    return { ok: false, error: e };
+  }
+}
+
+let lastPayload = null;
+
+function switchRole(role) {
+  currentRole = role;
+  answers = {};
+  openAnswers = { 'open-0': '', 'open-1': '', 'open-2': '' };
+  document.getElementById('btn-self').classList.toggle('active', role === 'self');
+  document.getElementById('btn-manager').classList.toggle('active', role === 'manager');
+  document.getElementById('evaluator-field').style.display = role === 'manager' ? 'block' : 'none';
+  document.getElementById('info-title').textContent = role === 'manager' ? 'Оцениваемый сотрудник' : 'Ваши данные';
+  document.getElementById('info-sub').textContent = role === 'manager' ? 'Данные сотрудника, которого вы оцениваете' : 'Заполните данные о себе';
+  document.getElementById('emp-name-label').textContent = role === 'manager' ? 'ФИО оцениваемого сотрудника' : 'Ваше ФИО';
+  document.getElementById('role-label-top').textContent = role === 'self' ? 'Самооценка' : 'Оценка руководителем';
+  renderSections();
+  updateProgress();
+}
+
+function getSections() {
+  const base = currentRole === 'self' ? selfSections : managerSections;
+  // АУП — без блока «Безопасность и стандарты труда»
+  return currentCategory === 'aup' ? base.filter(function (s) { return !s.safety; }) : base;
+}
+
+function renderSections() {
+  const container = document.getElementById('sections');
+  container.innerHTML = '';
+  const sections = getSections();
+  const openQs = openQuestionsMap[currentRole];
+
+  // ─── Легенда шкалы 1–10 (прилипающая) ───
+  const stickyScope = document.createElement('div');
+  stickyScope.className = 'sticky-scope qa-layout';
+  const aside = document.createElement('aside');
+  aside.className = 'scale-aside';
+  const qaMain = document.createElement('div');
+  qaMain.className = 'qa-main';
+
+  const legendCard = document.createElement('div');
+  legendCard.className = 'card legend-card';
+  legendCard.innerHTML = `
+    ${currentRole === 'manager' ? `<div class="eval-target">
+      <span class="eval-target-label">Оцениваемый сотрудник</span>
+      <span class="eval-target-name" id="eval-target-name">—</span>
+    </div>` : ''}
+    <div class="card-head">
+      <div class="card-icon ci-purple">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="4" y1="21" x2="4" y2="14"/><line x1="4" y1="10" x2="4" y2="3"/>
+          <line x1="12" y1="21" x2="12" y2="12"/><line x1="12" y1="8" x2="12" y2="3"/>
+          <line x1="20" y1="21" x2="20" y2="16"/><line x1="20" y1="12" x2="20" y2="3"/>
+          <line x1="1" y1="14" x2="7" y2="14"/><line x1="9" y1="8" x2="15" y2="8"/><line x1="17" y1="16" x2="23" y2="16"/>
+        </svg>
+      </div>
+      <div>
+        <div class="card-title">Шкала оценки: от 1 до 10</div>
+        <div class="card-sub">Выберите балл, который точнее всего отражает уровень проявления компетенции</div>
+      </div>
+    </div>
+    <div class="legend-list">
+      ${scaleGradation.map(g => `
+        <div class="legend-row">
+          <span class="legend-num" style="background:${g.color}">${g.v}</span>
+          <span class="legend-name">${g.label}</span>
+        </div>`).join('')}
+    </div>`;
+  aside.appendChild(legendCard);
+  stickyScope.appendChild(aside);
+
+  sections.forEach((sec, si) => {
+    const card = document.createElement('div');
+    card.className = 'card';
+
+    const qs = sec.questions.map((q, qi) => {
+      const key = `${si}-${qi}`;
+      const btns = [1,2,3,4,5,6,7,8,9,10].map(v =>
+        `<button class="scale-btn v${v}" data-key="${key}" data-val="${v}" onclick="setAnswer('${key}',${v},this)">${v}</button>`
+      ).join('');
+      return `<div class="question" id="q-${key}">
+        <div class="q-text"><span class="q-num">${qi+1}.</span>${q}</div>
+        <div class="scale">${btns}</div>
+        <div class="scale-meta"><span>${scaleLabels[0]}</span><span>${scaleLabels[1]}</span></div>
+      </div>`;
+    }).join('');
+
+    const commentKey = `comment-${si}`;
+    card.innerHTML = `
+      <div class="card-head">
+        <div class="card-icon ${sec.iconClass}">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">${sec.iconSvg}</svg>
+        </div>
+        <div>
+          <div class="card-title">${sec.title}</div>
+          <div class="card-sub">${sec.sub}</div>
+        </div>
+      </div>
+      ${qs}
+      <div class="comment-wrap" id="cwrap-${si}">
+        <div class="comment-label">Комментарий <span class="optional-tag" id="ctag-${si}">(по желанию)</span></div>
+        <textarea class="comment-input" data-comment="${commentKey}" placeholder="${currentRole==='self'?'Поделитесь конкретными примерами или мыслями...':'Опишите примеры поведения сотрудника...'}" rows="3"
+          oninput="onCommentInput(${si}, this)"></textarea>
+      </div>`;
+    qaMain.appendChild(card);
+  });
+  stickyScope.appendChild(qaMain);
+  container.appendChild(stickyScope);
+
+  // Open questions
+  const openCard = document.createElement('div');
+  openCard.className = 'card';
+  const openHtml = openQs.map((q, i) => `
+    <div class="question" id="oq-${i}">
+      <div class="q-text"><span class="q-num">${i+1}.</span>${q}</div>
+      <textarea class="open-input" data-open="${i}" placeholder="Ваш ответ..." rows="3" oninput="onOpenInput(${i}, this)"></textarea>
+    </div>`).join('');
+
+  openCard.innerHTML = `
+    <div class="card-head">
+      <div class="card-icon ci-coral">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/>
+        </svg>
+      </div>
+      <div>
+        <div class="card-title">Открытые вопросы</div>
+        <div class="card-sub">Развёрнутые ответы помогают лучше понять ситуацию · <span style="color:var(--red)">обязательны</span></div>
+      </div>
+    </div>
+    ${openHtml}`;
+  container.appendChild(openCard);
+
+  // Расшифровка категорий A/B/C — только в режиме руководителя
+  if (currentRole === 'manager') {
+    const catCard = document.createElement('div');
+    catCard.className = 'card';
+    catCard.innerHTML = `
+      <div class="card-head">
+        <div class="card-icon ci-purple">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="16" y2="17"/>
+          </svg>
+        </div>
+        <div>
+          <div class="card-title">Расшифровка итоговой категории</div>
+          <div class="card-sub">Ориентир для выбора категории A / B / C</div>
+        </div>
+      </div>
+      <div class="cat-item cat-a">
+        <div class="cat-name">Категория A — высокий уровень эффективности</div>
+        <div class="cat-desc">Сотрудник стабильно демонстрирует сильные результаты, качественно выполняет обязанности, соблюдает корпоративные стандарты, проявляет инициативу и может рассматриваться как пример для коллег.</div>
+      </div>
+      <div class="cat-item cat-b">
+        <div class="cat-name">Категория B — соответствует ожиданиям</div>
+        <div class="cat-desc">Сотрудник в целом справляется со своими обязанностями и достигает необходимых результатов. При этом имеются отдельные зоны для развития и повышения эффективности.</div>
+      </div>
+      <div class="cat-item cat-c">
+        <div class="cat-name">Категория C — требуется развитие</div>
+        <div class="cat-desc">У сотрудника выявлены существенные зоны роста, которые влияют на качество работы, результаты или взаимодействие с коллегами. Необходимо составление плана развития и дополнительное сопровождение со стороны руководителя.</div>
+      </div>`;
+    container.appendChild(catCard);
+  }
+
+  updateEvalTarget();
+}
+
+// Закреплённое ФИО оцениваемого (показывается в режиме руководителя)
+function updateEvalTarget() {
+  const el = document.getElementById('eval-target-name');
+  if (!el) return;
+  const name = (document.getElementById('emp-name').value || '').trim();
+  el.textContent = name || '—';
+}
+
+function setAnswer(key, val, btn) {
+  answers[key] = val;
+  clearMissingItem('q-' + key);
+  const allBtns = document.querySelectorAll(`[data-key="${key}"]`);
+  allBtns.forEach(b => {
+    b.classList.remove('active');
+    b.style.cssText = '';
+    if (parseInt(b.dataset.val) === val) {
+      b.classList.add('active');
+      const g = scaleGradation[val - 1];
+      if (g) { b.style.background = g.color; b.style.borderColor = g.color; b.style.color = '#fff'; }
+    }
+  });
+  updateProgress();
+  updateCommentRequirement(key.split('-')[0]);
+}
+
+// Нужен ли комментарий к блоку: да, если есть оценка ≤5 или ≥9
+function isCommentRequired(si) {
+  const sec = getSections()[si];
+  if (!sec) return false;
+  for (let qi = 0; qi < sec.questions.length; qi++) {
+    const v = answers[`${si}-${qi}`];
+    if (v != null && (v <= 5 || v >= 9)) return true;
+  }
+  return false;
+}
+
+// Обновить пометку «обязательно / по желанию» у комментария блока
+function updateCommentRequirement(si) {
+  const tag = document.getElementById('ctag-' + si);
+  if (!tag) return;
+  if (isCommentRequired(si)) {
+    tag.textContent = '(обязательно)';
+    tag.className = 'required-tag';
+  } else {
+    tag.textContent = '(по желанию)';
+    tag.className = 'optional-tag';
+    const field = document.querySelector(`.comment-input[data-comment="comment-${si}"]`);
+    if (field) field.classList.remove('field-error');
+    clearMissingItem('cwrap-' + si);
+  }
+}
+
+function countTotal() {
+  return getSections().reduce((s, sec) => s + sec.questions.length, 0);
+}
+
+function updateProgress() {
+  const total = countTotal();
+  const done = Object.keys(answers).length;
+  const pct = Math.round((done / total) * 100);
+  const circumference = 88;
+  const offset = circumference - (circumference * pct / 100);
+  document.getElementById('ring-fill').style.strokeDashoffset = offset;
+  document.getElementById('ring-pct').textContent = pct;
+  document.getElementById('prog-label').textContent = `${done} из ${total} вопросов`;
+}
+
+async function submitForm() {
+  const sections = getSections();
+  const openQs = openQuestionsMap[currentRole];
+  const missing = [];   // { id, label, type }
+
+  // 1) неотвеченные вопросы
+  sections.forEach((sec, si) => {
+    sec.questions.forEach((q, qi) => {
+      const key = `${si}-${qi}`;
+      const qEl = document.getElementById('q-' + key);
+      if (answers[key] == null) {
+        missing.push({ id: 'q-' + key, label: `Блок «${sec.title}», вопрос ${qi + 1}`, type: 'q' });
+        if (qEl) qEl.classList.add('q-missing');
+      } else if (qEl) {
+        qEl.classList.remove('q-missing');
+      }
+    });
+  });
+
+  // 2) комментарии: обязательны только если в блоке есть оценка ≤5 или ≥9
+  sections.forEach((sec, si) => {
+    const field = document.querySelector(`.comment-input[data-comment="comment-${si}"]`);
+    const val = (openAnswers[`comment-${si}`] || '').trim();
+    if (isCommentRequired(si) && !val) {
+      missing.push({ id: 'cwrap-' + si, label: `Комментарий — блок «${sec.title}» (есть оценки ≤5 или ≥9)`, type: 'c' });
+      if (field) field.classList.add('field-error');
+    } else if (field) {
+      field.classList.remove('field-error');
+    }
+  });
+
+  // 3) незаполненные открытые вопросы (обязательны)
+  openQs.forEach((q, i) => {
+    const val = (openAnswers[`open-${i}`] || '').trim();
+    const el = document.getElementById('oq-' + i);
+    const ta = el ? el.querySelector('textarea') : null;
+    if (!val) {
+      missing.push({ id: 'oq-' + i, label: `Открытый вопрос ${i + 1}`, type: 'o' });
+      if (ta) ta.classList.add('field-error');
+    } else if (ta) {
+      ta.classList.remove('field-error');
+    }
+  });
+
+  const box = document.getElementById('missing-box');
+  if (missing.length > 0) {
+    const list = document.getElementById('missing-list');
+    document.getElementById('missing-title').textContent = `Осталось заполнить: ${missing.length}. Нажмите, чтобы перейти:`;
+    list.innerHTML = missing.map(m =>
+      `<a class="missing-link" id="ml-${m.id}" onclick="jumpTo('${m.id}')">${m.label}</a>`
+    ).join('');
+    box.style.display = 'block';
+    jumpTo(missing[0].id);   // сразу к первому пропущенному
+    return;
+  }
+  if (box) box.style.display = 'none';
+
+  const empName = document.getElementById('emp-name').value.trim();
+  if (!empName) { alert('Пожалуйста, укажите ФИО оцениваемого сотрудника'); document.getElementById('emp-name').focus(); return; }
+
+  if (currentRole === 'manager') {
+    const evalName = document.getElementById('eval-name');
+    if (!evalName.value.trim()) {
+      alert('Пожалуйста, укажите своё имя (руководителя)');
+      evalName.classList.add('field-error');
+      evalName.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      evalName.focus();
+      return;
+    }
+  }
+
+  const btn = document.querySelector('.btn-submit');
+  if (btn) { btn.disabled = true; btn.style.opacity = '0.6'; }
+
+  lastPayload = buildPayload();
+  const res = await sendToHR(lastPayload);
+
+  if (btn) { btn.disabled = false; btn.style.opacity = '1'; }
+  showSuccess(res);
+}
+
+// Переход к пропущенному пункту с подсветкой
+function jumpTo(id) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  el.classList.add('flash');
+  setTimeout(() => el.classList.remove('flash'), 1600);
+  const ta = el.querySelector('textarea');
+  if (ta) ta.focus({ preventScroll: true });
+}
+
+// Убрать пункт из списка пропусков, когда на него ответили
+function clearMissingItem(id) {
+  const el = document.getElementById(id);
+  if (el) el.classList.remove('q-missing');
+  const link = document.getElementById('ml-' + id);
+  if (link) link.remove();
+  const list = document.getElementById('missing-list');
+  const box = document.getElementById('missing-box');
+  if (!list || !box) return;
+  if (list.children.length === 0) {
+    box.style.display = 'none';
+  } else {
+    document.getElementById('missing-title').textContent =
+      `Осталось заполнить: ${list.children.length}. Нажмите, чтобы перейти:`;
+  }
+}
+
+// Ввод комментария
+function onCommentInput(si, el) {
+  openAnswers['comment-' + si] = el.value;
+  if (el.value.trim()) {
+    el.classList.remove('field-error');
+    clearMissingItem('cwrap-' + si);
+  }
+}
+
+// Ввод открытого вопроса
+function onOpenInput(i, el) {
+  openAnswers['open-' + i] = el.value;
+  if (el.value.trim()) {
+    el.classList.remove('field-error');
+    clearMissingItem('oq-' + i);
+  }
+}
+
+function showSuccess(res) {
+  document.getElementById('form-area').style.display = 'none';
+  const successArea = document.getElementById('success-area');
+  successArea.style.display = 'block';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+
+  const empName = document.getElementById('emp-name').value.trim();
+  const isManager = currentRole === 'manager';
+
+  // Статус отправки в HR
+  const statusEl = document.getElementById('hr-status');
+  if (statusEl) {
+    if (res && res.ok) {
+      statusEl.style.display = 'flex';
+      statusEl.className = 'hr-status ok';
+      statusEl.innerHTML = '✓ Анкета принята и отправлена в HR-отдел';
+    } else if (res && res.skipped) {
+      statusEl.style.display = 'flex';
+      statusEl.className = 'hr-status info';
+      statusEl.innerHTML = 'Отправка на сервер не настроена: укажите HR_WEBHOOK_URL в коде страницы.';
+    } else {
+      statusEl.style.display = 'flex';
+      statusEl.className = 'hr-status warn';
+      statusEl.innerHTML = '⚠ Не удалось отправить анкету. Проверьте интернет-соединение и повторите.';
+    }
+  }
+
+  document.getElementById('success-desc').textContent = isManager
+    ? `Оценка сотрудника ${empName} принята и передана в HR-отдел.`
+    : `Спасибо, ${empName}. Ваши ответы приняты и переданы в HR-отдел.`;
+}
+
+function resetForm() {
+  answers = {};
+  openAnswers = { 'open-0': '', 'open-1': '', 'open-2': '' };
+  document.getElementById('success-area').style.display = 'none';
+  document.getElementById('form-area').style.display = 'block';
+  document.getElementById('emp-name').value = '';
+  document.getElementById('emp-role').value = '';
+  document.getElementById('emp-dept').value = '';
+  document.getElementById('eval-period').value = '1-полугодие 2026';
+  document.getElementById('eval-name').value = '';
+  renderSections();
+  updateProgress();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// Init — стартуем с экрана выбора категории (АУП / ИТР)
+// форма отрисуется после выбора через selectCategory()
+</script>
+</body>
+</html>
