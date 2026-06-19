@@ -528,7 +528,12 @@
       <div class="meta-grid" style="margin-bottom:14px">
         <div>
           <div class="field-label" id="emp-name-label">ФИО оцениваемого сотрудника</div>
-          <input type="text" id="emp-name" placeholder="Иванов Иван Иванович" oninput="updateEvalTarget()">
+          <select id="emp-name" onchange="onEmpSelect()">
+            <option value="">— выберите сотрудника —</option>
+          </select>
+          <input type="text" id="emp-name-manual" placeholder="Фамилия Имя Отчество" style="display:none; margin-top:8px"
+            oninput="updateEvalTarget()">
+          <div id="emp-name-manual-hint" style="display:none; font-size:12px; color:var(--text-3); margin-top:6px">Впишите ФИО полностью. Фамилия — первым словом (для верного анализа).</div>
         </div>
         <div>
           <div class="field-label">Должность</div>
@@ -833,6 +838,91 @@ const HR_WEBHOOK_URL = 'https://script.google.com/macros/s/AKfycbwuf56wlqwzqybwU
 
 let currentRole = 'self';
 let currentCategory = 'itr';   // 'itr' (все блоки) или 'aup' (без блока безопасности)
+
+// Списки сотрудников по категориям (ОФИС = aup, ЗАВОД = itr)
+const employeeLists = {
+  aup: [
+    'Акименко Анастасия Дмитриевна',
+    'Аскангалиев Арман Нуральевич',
+    'Беккалиева Алтынай Сериковна',
+    'Берлабеков Галимжан Саматбекович',
+    'Давыдов Максим Сергеевич',
+    'Данабекова Венера Жаксылыковна',
+    'Даримбетов Казбек Абдрахманович',
+    'Дәулетұлы Нұрмұқасан',
+    'Ерекенов Адил Куандыкович',
+    'Ермошкина Елена Николаевна',
+    'Ешимов Жалгас Талгатович',
+    'Жиенбет Медет Қуанышұлы',
+    'Имашева Жанат Купбергеновна',
+    'Исқалиев Нұрғали Ерғалиұлы',
+    'Исмагамбетова Асель Хамитовна',
+    'Казбагамбетова Айгерим Мырзахановна',
+    'Каражанова Зарина Равильевна',
+    'Каструбина Екатерина Александровна',
+    'Киржанов Ислам Канатулы',
+    'Кудайбергенова Азиза Газизоллаевна',
+    'Литовченко Виталий Сергеевич',
+    'Марденова Сауле Муратовна',
+    'Нагашбаев Салават Кабакович',
+    'Нуртаев Аслан Нуртаевич',
+    'Романова Ксения Николаевна',
+    'Таймасова Диана Витальевна',
+    'Уалиев Манас Кайратович'
+  ],
+  itr: [
+    'Абдигазиев Абай Калдыбекович',
+    'Абдразаков Тимур Габитович',
+    'Дарибаев Тимур Абаевич',
+    'Каратаев Дамир Навидуллович',
+    'Козленко Марина Владимировна',
+    'Колжанов Асыланбек Курманалыулы',
+    'Конырбаев Жанболат Кенжесович',
+    'Кривой Михаил Валентинович',
+    'Ольшевская Екатерина Андреевна',
+    'Плаван Алексей Олегович',
+    'Потуга Вера Юрьевна',
+    'Сеновозова Елена Юрьевна',
+    'Султанов Султан Мирбулатович',
+    'Сухов Виталий Александрович'
+  ]
+};
+
+// Заполнить выпадающий список сотрудников для текущей категории
+function populateEmployeeList() {
+  const sel = document.getElementById('emp-name');
+  if (!sel) return;
+  const prev = sel.value;
+  const list = employeeLists[currentCategory] || [];
+  sel.innerHTML = '<option value="">— выберите сотрудника —</option>' +
+    list.map(function (n) { return '<option value="' + n + '">' + n + '</option>'; }).join('') +
+    '<option value="__manual__">Нет в списке (вписать вручную)</option>';
+  sel.value = (list.indexOf(prev) >= 0) ? prev : '';
+  onEmpSelect();
+}
+
+// Реакция на выбор в списке: показать/скрыть поле ручного ввода
+function onEmpSelect() {
+  const sel = document.getElementById('emp-name');
+  const manual = document.getElementById('emp-name-manual');
+  const hint = document.getElementById('emp-name-manual-hint');
+  const isManual = sel && sel.value === '__manual__';
+  if (manual) manual.style.display = isManual ? 'block' : 'none';
+  if (hint) hint.style.display = isManual ? 'block' : 'none';
+  if (isManual && manual) manual.focus();
+  updateEvalTarget();
+}
+
+// Текущее ФИО оцениваемого: из списка или из ручного поля
+function getEmployeeName() {
+  const sel = document.getElementById('emp-name');
+  if (sel && sel.value === '__manual__') {
+    const manual = document.getElementById('emp-name-manual');
+    return (manual ? manual.value : '').trim();
+  }
+  return sel ? sel.value.trim() : '';
+}
+
 let answers = {};
 let openAnswers = { 'open-0': '', 'open-1': '', 'open-2': '' };
 
@@ -843,6 +933,7 @@ function selectCategory(cat) {
   document.getElementById('topbar').style.display = 'flex';
   document.getElementById('form-area').style.display = 'block';
   document.getElementById('cat-label-top').textContent = cat === 'itr' ? 'ЗАВОД' : 'ОФИС';
+  populateEmployeeList();
   window.scrollTo({ top: 0 });
   switchRole('self');
 }
@@ -873,7 +964,7 @@ function buildPayload() {
     category: currentCategory === 'itr' ? 'ЗАВОД' : 'ОФИС',
     submittedAt: new Date().toISOString(),
     employee: {
-      name: document.getElementById('emp-name').value.trim(),
+      name: getEmployeeName(),
       role: document.getElementById('emp-role').value.trim(),
       department: document.getElementById('emp-dept').value.trim(),
       period: document.getElementById('eval-period').value.trim()
@@ -1072,7 +1163,7 @@ function renderSections() {
 function updateEvalTarget() {
   const el = document.getElementById('eval-target-name');
   if (!el) return;
-  const name = (document.getElementById('emp-name').value || '').trim();
+  const name = getEmployeeName();
   el.textContent = name || '—';
 }
 
@@ -1192,8 +1283,8 @@ async function submitForm() {
   }
   if (box) box.style.display = 'none';
 
-  const empName = document.getElementById('emp-name').value.trim();
-  if (!empName) { alert('Пожалуйста, укажите ФИО оцениваемого сотрудника'); document.getElementById('emp-name').focus(); return; }
+  const empName = getEmployeeName();
+  if (!empName) { alert('Пожалуйста, выберите сотрудника из списка (или впишите ФИО, выбрав «Нет в списке»)'); document.getElementById('emp-name').focus(); return; }
 
   if (currentRole === 'manager') {
     const evalName = document.getElementById('eval-name');
@@ -1268,7 +1359,7 @@ function showSuccess(res) {
   successArea.style.display = 'block';
   window.scrollTo({ top: 0, behavior: 'smooth' });
 
-  const empName = document.getElementById('emp-name').value.trim();
+  const empName = getEmployeeName();
   const isManager = currentRole === 'manager';
 
   // Статус отправки в HR
@@ -1300,6 +1391,8 @@ function resetForm() {
   document.getElementById('success-area').style.display = 'none';
   document.getElementById('form-area').style.display = 'block';
   document.getElementById('emp-name').value = '';
+  var _m = document.getElementById('emp-name-manual'); if (_m) { _m.value = ''; _m.style.display = 'none'; }
+  var _h = document.getElementById('emp-name-manual-hint'); if (_h) _h.style.display = 'none';
   document.getElementById('emp-role').value = '';
   document.getElementById('emp-dept').value = '';
   document.getElementById('eval-period').value = '1-полугодие 2026';
