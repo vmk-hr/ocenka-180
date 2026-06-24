@@ -295,6 +295,27 @@
   .cat-b { border-left-color: #D6B838; }
   .cat-c { border-left-color: #D64541; }
 
+  /* кнопки выбора итоговой категории A/B/C */
+  .grade-group { display: flex; flex-direction: column; gap: 8px; }
+  .grade-group.field-error { outline: 2px solid var(--red); outline-offset: 4px; border-radius: var(--radius-sm); }
+  .grade-btn {
+    display: flex; align-items: flex-start; gap: 12px; width: 100%;
+    padding: 13px 14px; border: 1.5px solid var(--border-md); border-radius: var(--radius-sm);
+    background: var(--surface); cursor: pointer; text-align: left; font-family: 'Onest', sans-serif;
+    transition: all 0.15s;
+  }
+  .grade-btn:hover { border-color: var(--text-3); }
+  .grade-letter {
+    flex: none; width: 34px; height: 34px; border-radius: 9px; color: #fff; margin-top: 1px;
+    display: flex; align-items: center; justify-content: center; font-size: 17px; font-weight: 700;
+  }
+  .grade-a .grade-letter { background: #2E9E63; }
+  .grade-b .grade-letter { background: #D6B838; }
+  .grade-c .grade-letter { background: #D64541; }
+  .grade-desc { font-size: 13px; color: var(--text-2); line-height: 1.5; }
+  .grade-btn.selected { border-color: var(--accent); background: var(--accent-bg); }
+  .grade-btn.selected .grade-desc { color: var(--text); font-weight: 500; }
+
   /* блок со списком пропущенных пунктов */
   .missing-box { border: 1px solid var(--red); background: #FDECEA; border-radius: var(--radius-sm); padding: 14px 16px; margin-bottom: 1rem; }
   .missing-head { display: flex; align-items: center; gap: 8px; font-size: 13.5px; font-weight: 600; color: var(--red); margin-bottom: 10px; }
@@ -1136,11 +1157,29 @@ function renderSections() {
   // Open questions
   const openCard = document.createElement('div');
   openCard.className = 'card';
-  const openHtml = openQs.map((q, i) => `
-    <div class="question" id="oq-${i}">
+  const gradeOpts = [
+    ['A', 'Высокий уровень эффективности. Сотрудник стабильно демонстрирует сильные результаты, качественно выполняет обязанности, соблюдает корпоративные стандарты, проявляет инициативу и может рассматриваться как пример для коллег.'],
+    ['B', 'Соответствует ожиданиям. Сотрудник в целом справляется со своими обязанностями и достигает необходимых результатов. При этом имеются отдельные зоны для развития и повышения эффективности.'],
+    ['C', 'Требуется развитие. У сотрудника выявлены существенные зоны роста, которые влияют на качество работы, результаты или взаимодействие с коллегами. Необходимо составление плана развития и дополнительное сопровождение со стороны руководителя.']
+  ];
+  const openHtml = openQs.map((q, i) => {
+    if (/Итоговая категория/.test(q)) {
+      return `<div class="question" id="oq-${i}">
+        <div class="q-text"><span class="q-num">${i+1}.</span>${q}</div>
+        <div class="grade-group" data-open="${i}">
+          ${gradeOpts.map(([g, desc]) => `
+            <button type="button" class="grade-btn grade-${g.toLowerCase()}" data-grade="${g}" onclick="selectGrade(${i}, '${g}', this)">
+              <span class="grade-letter">${g}</span>
+              <span class="grade-desc">${desc}</span>
+            </button>`).join('')}
+        </div>
+      </div>`;
+    }
+    return `<div class="question" id="oq-${i}">
       <div class="q-text"><span class="q-num">${i+1}.</span>${q}</div>
       <textarea class="open-input" data-open="${i}" placeholder="Ваш ответ..." rows="3" oninput="onOpenInput(${i}, this)"></textarea>
-    </div>`).join('');
+    </div>`;
+  }).join('');
 
   openCard.innerHTML = `
     <div class="card-head">
@@ -1156,37 +1195,6 @@ function renderSections() {
     </div>
     ${openHtml}`;
   container.appendChild(openCard);
-
-  // Расшифровка категорий A/B/C — только в режиме руководителя
-  if (currentRole === 'manager') {
-    const catCard = document.createElement('div');
-    catCard.className = 'card';
-    catCard.innerHTML = `
-      <div class="card-head">
-        <div class="card-icon ci-purple">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="16" y2="17"/>
-          </svg>
-        </div>
-        <div>
-          <div class="card-title">Расшифровка итоговой категории</div>
-          <div class="card-sub">Ориентир для выбора категории A / B / C</div>
-        </div>
-      </div>
-      <div class="cat-item cat-a">
-        <div class="cat-name">Категория A — высокий уровень эффективности</div>
-        <div class="cat-desc">Сотрудник стабильно демонстрирует сильные результаты, качественно выполняет обязанности, соблюдает корпоративные стандарты, проявляет инициативу и может рассматриваться как пример для коллег.</div>
-      </div>
-      <div class="cat-item cat-b">
-        <div class="cat-name">Категория B — соответствует ожиданиям</div>
-        <div class="cat-desc">Сотрудник в целом справляется со своими обязанностями и достигает необходимых результатов. При этом имеются отдельные зоны для развития и повышения эффективности.</div>
-      </div>
-      <div class="cat-item cat-c">
-        <div class="cat-name">Категория C — требуется развитие</div>
-        <div class="cat-desc">У сотрудника выявлены существенные зоны роста, которые влияют на качество работы, результаты или взаимодействие с коллегами. Необходимо составление плана развития и дополнительное сопровождение со стороны руководителя.</div>
-      </div>`;
-    container.appendChild(catCard);
-  }
 
   updateEvalTarget();
 }
@@ -1294,11 +1302,14 @@ async function submitForm() {
     const val = (openAnswers[`open-${i}`] || '').trim();
     const el = document.getElementById('oq-' + i);
     const ta = el ? el.querySelector('textarea') : null;
+    const gg = el ? el.querySelector('.grade-group') : null;
     if (!val) {
       missing.push({ id: 'oq-' + i, label: `Открытый вопрос ${i + 1}`, type: 'o' });
       if (ta) ta.classList.add('field-error');
-    } else if (ta) {
-      ta.classList.remove('field-error');
+      if (gg) gg.classList.add('field-error');
+    } else {
+      if (ta) ta.classList.remove('field-error');
+      if (gg) gg.classList.remove('field-error');
     }
   });
 
@@ -1383,6 +1394,16 @@ function onOpenInput(i, el) {
     el.classList.remove('field-error');
     clearMissingItem('oq-' + i);
   }
+}
+
+// Выбор итоговой категории A/B/C (кнопки)
+function selectGrade(i, grade, btn) {
+  openAnswers['open-' + i] = grade;
+  const group = btn.parentNode;
+  group.classList.remove('field-error');
+  group.querySelectorAll('.grade-btn').forEach(function (b) { b.classList.remove('selected'); });
+  btn.classList.add('selected');
+  clearMissingItem('oq-' + i);
 }
 
 function showSuccess(res) {
