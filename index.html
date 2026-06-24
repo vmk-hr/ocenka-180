@@ -233,6 +233,23 @@
   .required-tag { font-weight: 500; text-transform: none; letter-spacing: 0; color: var(--red); font-size: 11px; }
   .optional-tag { font-weight: 500; text-transform: none; letter-spacing: 0; color: var(--text-3); font-size: 11px; }
 
+  /* плавающие кнопки вверх/вниз */
+  #nav-fab { position: fixed; right: 20px; bottom: 24px; z-index: 90; display: flex; flex-direction: column; gap: 10px; }
+  .fab-btn {
+    width: 46px; height: 46px; border-radius: 50%; cursor: pointer;
+    background: var(--accent); color: #fff; border: none;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.22);
+    display: flex; align-items: center; justify-content: center;
+    transition: transform 0.15s, background 0.15s, opacity 0.15s;
+  }
+  .fab-btn:hover { transform: translateY(-2px); filter: brightness(1.05); }
+  .fab-btn:active { transform: translateY(0); }
+  .fab-btn svg { width: 22px; height: 22px; }
+  @media (max-width: 600px) {
+    #nav-fab { right: 14px; bottom: 18px; }
+    .fab-btn { width: 42px; height: 42px; }
+  }
+
   /* карточка-инструкция */
   .instr-card { background: linear-gradient(180deg, var(--accent-bg), var(--surface)); border-color: var(--accent); }
   .instr-list { margin: 4px 0 0; padding-left: 1.25rem; display: flex; flex-direction: column; gap: 10px; }
@@ -836,7 +853,7 @@ function getLevel(score) {
 //  Вставьте сюда URL вашего приёмника данных (Google Apps Script,
 //  Formspree, n8n, собственный сервер и т.п.). Если оставить пустым —
 //  анкета работает локально: результаты можно скачать или распечатать.
-const HR_WEBHOOK_URL = 'https://script.google.com/macros/s/AKfycbz-le4Jkt1UQ3i3aUoeuCofSymIs7zBw3Uphz_Sn_WnBfPhpQzpH_1OGz-yB4bbvjGD/exec';
+const HR_WEBHOOK_URL = 'https://script.google.com/macros/s/AKfycbxMfKPs5y24okQ8r09rGhAo-ipCPAkoO_eSTQazxpREhIG0W04-WoW4gmECuKUICoM/exec';
 // ══════════════════════════════════════════════════════════════
 
 let currentRole = 'self';
@@ -937,6 +954,7 @@ function selectCategory(cat) {
   document.getElementById('form-area').style.display = 'block';
   document.getElementById('cat-label-top').textContent = cat === 'itr' ? 'ЗАВОД' : 'ОФИС';
   populateEmployeeList();
+  document.getElementById('nav-fab').style.display = 'flex';
   window.scrollTo({ top: 0 });
   switchRole('self');
 }
@@ -945,8 +963,19 @@ function backToCategory() {
   document.getElementById('form-area').style.display = 'none';
   document.getElementById('topbar').style.display = 'none';
   document.getElementById('success-area').style.display = 'none';
+  document.getElementById('nav-fab').style.display = 'none';
   document.getElementById('category-screen').style.display = 'flex';
   window.scrollTo({ top: 0 });
+}
+
+// Прокрутка к началу и к концу анкеты
+function scrollToTop() {
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+function scrollToBottom() {
+  const btn = document.querySelector('.btn-submit');
+  if (btn) btn.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  else window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
 }
 
 // Собрать все данные анкеты в один объект
@@ -1358,6 +1387,7 @@ function onOpenInput(i, el) {
 
 function showSuccess(res) {
   document.getElementById('form-area').style.display = 'none';
+  document.getElementById('nav-fab').style.display = 'none';
   const successArea = document.getElementById('success-area');
   successArea.style.display = 'block';
   window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -1393,6 +1423,7 @@ function resetForm() {
   openAnswers = { 'open-0': '', 'open-1': '', 'open-2': '' };
   document.getElementById('success-area').style.display = 'none';
   document.getElementById('form-area').style.display = 'block';
+  document.getElementById('nav-fab').style.display = 'flex';
   document.getElementById('emp-name').value = '';
   var _m = document.getElementById('emp-name-manual'); if (_m) { _m.value = ''; _m.style.display = 'none'; }
   var _h = document.getElementById('emp-name-manual-hint'); if (_h) _h.style.display = 'none';
@@ -1408,5 +1439,15 @@ function resetForm() {
 // Init — стартуем с экрана выбора категории (АУП / ИТР)
 // форма отрисуется после выбора через selectCategory()
 </script>
+<!-- Плавающие кнопки навигации -->
+<div id="nav-fab" style="display:none">
+  <button class="fab-btn" onclick="scrollToTop()" title="Наверх" aria-label="Наверх">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg>
+  </button>
+  <button class="fab-btn" onclick="scrollToBottom()" title="Вниз" aria-label="Вниз">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+  </button>
+</div>
+
 </body>
 </html>
