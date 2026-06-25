@@ -593,7 +593,11 @@
       </div>
       <div id="evaluator-field" style="display:none; margin-top:4px; padding-top:16px; border-top:1px solid var(--border)">
         <div class="field-label" style="color:var(--accent)">Кто оценивает — ФИО руководителя</div>
-        <input type="text" id="eval-name" placeholder="Петрова Мария Александровна" oninput="this.classList.remove('field-error')">
+        <select id="eval-name" onchange="onEvalSelect()">
+          <option value="">— выберите руководителя —</option>
+        </select>
+        <input type="text" id="eval-name-manual" placeholder="Фамилия Имя Отчество" style="display:none; margin-top:8px"
+          oninput="this.classList.remove('field-error')">
         <div style="font-size:12px; color:var(--text-3); margin-top:6px">Укажите своё имя. В отчёте будет видно, кто из руководителей поставил оценку.</div>
       </div>
     </div>
@@ -929,6 +933,29 @@ const employeeLists = {
   ]
 };
 
+// Списки руководителей по категориям
+const managerLists = {
+  aup: [
+    'Литовченко Виталий Сергеевич',
+    'Исмагамбетова Асель Хамитовна',
+    'Каструбина Екатерина Александровна',
+    'Берлабеков Галимжан Саматбекович',
+    'Нагашбаев Салават Кабакович',
+    'Таймасова Диана Витальевна',
+    'Нуртаев Аслан Нуртаевич'
+  ],
+  itr: [
+    'Плаван Алексей Олегович',
+    'Сухов Виталий Александрович',
+    'Кривой Михаил Валентинович',
+    'Колжанов Асыланбек Курманалыулы'
+  ]
+};
+
+// Пароль на режим «Оценка руководителем» (один раз за сессию)
+const MANAGER_PASSWORD = '4551';
+let managerUnlocked = false;
+
 // Заполнить выпадающий список сотрудников для текущей категории
 function populateEmployeeList() {
   const sel = document.getElementById('emp-name');
@@ -964,6 +991,39 @@ function getEmployeeName() {
   return sel ? sel.value.trim() : '';
 }
 
+// Заполнить выпадающий список руководителей для текущей категории
+function populateManagerList() {
+  const sel = document.getElementById('eval-name');
+  if (!sel) return;
+  const prev = sel.value;
+  const list = managerLists[currentCategory] || [];
+  sel.innerHTML = '<option value="">— выберите руководителя —</option>' +
+    list.map(function (n) { return '<option value="' + n + '">' + n + '</option>'; }).join('') +
+    '<option value="__manual__">Нет в списке (вписать вручную)</option>';
+  sel.value = (list.indexOf(prev) >= 0) ? prev : '';
+  onEvalSelect();
+}
+
+// Реакция на выбор руководителя
+function onEvalSelect() {
+  const sel = document.getElementById('eval-name');
+  const manual = document.getElementById('eval-name-manual');
+  const isManual = sel && sel.value === '__manual__';
+  if (manual) manual.style.display = isManual ? 'block' : 'none';
+  if (isManual && manual) manual.focus();
+  if (sel) sel.classList.remove('field-error');
+}
+
+// Текущее имя руководителя: из списка или из ручного поля
+function getEvaluatorName() {
+  const sel = document.getElementById('eval-name');
+  if (sel && sel.value === '__manual__') {
+    const manual = document.getElementById('eval-name-manual');
+    return (manual ? manual.value : '').trim();
+  }
+  return sel ? sel.value.trim() : '';
+}
+
 let answers = {};
 let openAnswers = { 'open-0': '', 'open-1': '', 'open-2': '' };
 
@@ -975,6 +1035,7 @@ function selectCategory(cat) {
   document.getElementById('form-area').style.display = 'block';
   document.getElementById('cat-label-top').textContent = cat === 'itr' ? 'ЗАВОД' : 'ОФИС';
   populateEmployeeList();
+  populateManagerList();
   document.getElementById('nav-fab').style.display = 'flex';
   window.scrollTo({ top: 0 });
   switchRole('self');
@@ -1022,7 +1083,7 @@ function buildPayload() {
       department: document.getElementById('emp-dept').value.trim(),
       period: document.getElementById('eval-period').value.trim()
     },
-    evaluator: currentRole === 'manager' ? document.getElementById('eval-name').value.trim() : 'Сам сотрудник',
+    evaluator: currentRole === 'manager' ? getEvaluatorName() : 'Сам сотрудник',
     overallScore: overall,
     overallLevel: getLevel(overall).label,
     scaleMax: 10,
@@ -1051,6 +1112,16 @@ async function sendToHR(payload) {
 let lastPayload = null;
 
 function switchRole(role) {
+  // Пароль на режим руководителя (спрашиваем один раз за сессию)
+  if (role === 'manager' && !managerUnlocked) {
+    const entered = prompt('Режим «Оценка руководителем» защищён.\nВведите пароль:');
+    if (entered === null) return;                 // нажали «Отмена» — остаёмся как есть
+    if (entered.trim() !== MANAGER_PASSWORD) {
+      alert('Неверный пароль. Доступ к режиму руководителя закрыт.');
+      return;                                       // не переключаемся
+    }
+    managerUnlocked = true;                          // больше не спрашиваем до перезагрузки
+  }
   currentRole = role;
   answers = {};
   openAnswers = { 'open-0': '', 'open-1': '', 'open-2': '' };
@@ -1330,9 +1401,9 @@ async function submitForm() {
   if (!empName) { alert('Пожалуйста, выберите сотрудника из списка (или впишите ФИО, выбрав «Нет в списке»)'); document.getElementById('emp-name').focus(); return; }
 
   if (currentRole === 'manager') {
-    const evalName = document.getElementById('eval-name');
-    if (!evalName.value.trim()) {
-      alert('Пожалуйста, укажите своё имя (руководителя)');
+    if (!getEvaluatorName()) {
+      alert('Пожалуйста, выберите руководителя из списка (или впишите ФИО, выбрав «Нет в списке»)');
+      const evalName = document.getElementById('eval-name');
       evalName.classList.add('field-error');
       evalName.scrollIntoView({ behavior: 'smooth', block: 'center' });
       evalName.focus();
@@ -1452,6 +1523,7 @@ function resetForm() {
   document.getElementById('emp-dept').value = '';
   document.getElementById('eval-period').value = '1-полугодие 2026';
   document.getElementById('eval-name').value = '';
+  var _em = document.getElementById('eval-name-manual'); if (_em) { _em.value = ''; _em.style.display = 'none'; }
   renderSections();
   updateProgress();
   window.scrollTo({ top: 0, behavior: 'smooth' });
